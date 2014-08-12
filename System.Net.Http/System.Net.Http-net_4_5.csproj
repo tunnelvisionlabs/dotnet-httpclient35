@@ -8,7 +8,6 @@
     <ProjectGuid>{9862694D-E4FA-418B-8692-A0280FEDDF36}</ProjectGuid>
     <OutputType>Library</OutputType>
     <NoWarn>1699</NoWarn>
-    <NoStdLib>True</NoStdLib>
     <NoConfig>True</NoConfig>
     
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -38,12 +37,10 @@
     <WarningLevel>4</WarningLevel>
     <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
-  <!-- Set AddAdditionalExplicitAssemblyReferences to false, otherwise if targetting .NET4.0, 
-  Microsoft.NETFramework.props will force a dependency on the assembly System.Core. This
-  is a problem to compile the Mono mscorlib.dll -->
-  <PropertyGroup>
-    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
-  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\build\common\Consts.cs" />
     <Compile Include="Assembly\AssemblyInfo.cs" />
@@ -99,20 +96,6 @@
     <Compile Include="System.Net.Http\MultipartFormDataContent.cs" />
     <Compile Include="System.Net.Http\StreamContent.cs" />
     <Compile Include="System.Net.Http\StringContent.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="../corlib/corlib-net_4_5.csproj">
-      <Project>{33BF0182-AC5C-464C-995B-C9CFE74E1A95}</Project>
-      <Name>corlib-net_4_5</Name>
-    </ProjectReference>
-    <ProjectReference Include="../System.Core/System.Core-net_4_5.csproj">
-      <Project>{D92530F4-3F2B-4351-BD21-9D6BEE6D2A4E}</Project>
-      <Name>System.Core-net_4_5</Name>
-    </ProjectReference>
-    <ProjectReference Include="../System/System-net_4_5.csproj">
-      <Project>{FFAC0B73-D997-493B-9C62-27656CD858BB}</Project>
-      <Name>System-net_4_5</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
