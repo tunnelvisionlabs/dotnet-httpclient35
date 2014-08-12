@@ -262,28 +262,38 @@ namespace System.Net.Http
 			return SendAsyncWorker (request, completionOption, cancellationToken);
 		}
 
-		async Task<HttpResponseMessage> SendAsyncWorker (HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+		Task<HttpResponseMessage> SendAsyncWorker (HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
 		{
-			using (var lcts = CancellationTokenSource.CreateLinkedTokenSource (cts.Token, cancellationToken)) {
-				lcts.CancelAfter (timeout);
+			Func<Task<CancellationTokenSource>> acquireResource = () => CompletedTask.FromResult (CancellationTokenSource.CreateLinkedTokenSource (cts.Token, cancellationToken));
+			Func<Task<CancellationTokenSource>, Task<HttpResponseMessage>> body =
+				resourceTask =>
+				{
+					var lcts = resourceTask.Result;
+					lcts.CancelAfter (timeout);
 
-				var task = base.SendAsync (request, lcts.Token);
-				if (task == null)
-					throw new InvalidOperationException ("Handler failed to return a value");
-					
-				var response = await task.ConfigureAwait (false);
-				if (response == null)
-					throw new InvalidOperationException ("Handler failed to return a response");
+					var task = base.SendAsync (request, lcts.Token);
+					if (task == null)
+						throw new InvalidOperationException ("Handler failed to return a value");
 
-				//
-				// Read the content when default HttpCompletionOption.ResponseContentRead is set
-				//
-				if (response.Content != null && (completionOption & HttpCompletionOption.ResponseHeadersRead) == 0) {
-					await response.Content.LoadIntoBufferAsync (MaxResponseContentBufferSize).ConfigureAwait (false);
-				}
+					return task.Then (
+						responseTask => {
+							var response = responseTask.Result;
+							if (response == null)
+								throw new InvalidOperationException ("Handler failed to return a response");
+
+							//
+							// Read the content when default HttpCompletionOption.ResponseContentRead is set
+							//
+							if (response.Content != null && (completionOption & HttpCompletionOption.ResponseHeadersRead) == 0) {
+								return response.Content.LoadIntoBufferAsync (MaxResponseContentBufferSize)
+									.Select (_ => response);
+							}
 					
-				return response;
-			}
+							return CompletedTask.FromResult (response);
+						});
+				};
+
+			return TaskBlocks.Using (acquireResource, body);
 		}
 
 		public Task<byte[]> GetByteArrayAsync (string requestUri)

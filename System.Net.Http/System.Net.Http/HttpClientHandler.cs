@@ -309,7 +309,7 @@ namespace System.Net.Http
 			return response;
 		}
 
-		protected async internal override Task<HttpResponseMessage> SendAsync (HttpRequestMessage request, CancellationToken cancellationToken)
+		protected internal override Task<HttpResponseMessage> SendAsync (HttpRequestMessage request, CancellationToken cancellationToken)
 		{
 			if (disposed != 0)
 				throw new ObjectDisposedException (GetType ().ToString ());
@@ -317,6 +317,7 @@ namespace System.Net.Http
 			Interlocked.Exchange(ref sentRequest, 1);
 			wrequest = CreateWebRequest (request);
 
+			Task intermediate;
 			if (request.Content != null) {
 				var headers = wrequest.Headers;
 				foreach (var header in request.Content.Headers) {
@@ -325,34 +326,49 @@ namespace System.Net.Http
 					}
 				}
 
-				var stream = await wrequest.GetRequestStreamAsync ().ConfigureAwait (false);
-				await request.Content.CopyToAsync (stream).ConfigureAwait (false);
+				intermediate = wrequest.GetRequestStreamAsync ()
+					.Then (streamTask => request.Content.CopyToAsync (streamTask.Result));
 			} else if (HttpMethod.Post.Equals (request.Method) || HttpMethod.Put.Equals (request.Method) || HttpMethod.Delete.Equals (request.Method)) {
 				// Explicitly set this to make sure we're sending a "Content-Length: 0" header.
 				// This fixes the issue that's been reported on the forums:
 				// http://forums.xamarin.com/discussion/17770/length-required-error-in-http-post-since-latest-release
 				wrequest.ContentLength = 0;
+				intermediate = CompletedTask.Default;
+			} else {
+				intermediate = CompletedTask.Default;
 			}
 
 			HttpWebResponse wresponse = null;
-			using (cancellationToken.Register (l => ((HttpWebRequest) l).Abort (), wrequest)) {
-				try {
-					wresponse = (HttpWebResponse) await wrequest.GetResponseAsync ().ConfigureAwait (false);
-				} catch (WebException we) {
-					if (we.Status == WebExceptionStatus.ProtocolError) {
-						// HttpClient shouldn't throw exceptions for these errors
-						wresponse = (HttpWebResponse) we.Response;
-					} else if (we.Status != WebExceptionStatus.RequestCanceled) {
-						throw;
-					}
-				}
+			Func<Task<IDisposable>> resource =
+				() => CompletedTask.FromResult<IDisposable> (cancellationToken.Register (l => ((HttpWebRequest) l).Abort (), wrequest));
+			Func<Task<IDisposable>, Task> body =
+				_ => {
+					return wrequest.GetResponseAsync ().Select(task => wresponse = (HttpWebResponse)task.Result)
+						.Catch<WebException> (
+							(task, we) => {
+								if (we.Status == WebExceptionStatus.ProtocolError) {
+									// HttpClient shouldn't throw exceptions for these errors
+									wresponse = (HttpWebResponse) we.Response;
+								} else if (we.Status != WebExceptionStatus.RequestCanceled) {
+									// propagate the antecedent
+									return task;
+								}
 
-				if (cancellationToken.IsCancellationRequested) {
-					return await CompletedTask.Canceled<HttpResponseMessage> ();
-				}
-			}
-			
-			return CreateResponseMessage (wresponse, request, cancellationToken);
+								return CompletedTask.Default;
+							})
+						.Then (
+							task => {
+								if (cancellationToken.IsCancellationRequested) {
+									return CompletedTask.Canceled<HttpResponseMessage> ();
+								} else {
+									return CompletedTask.Default;
+								}
+							});
+				};
+
+			return intermediate
+				.Then (_ => TaskBlocks.Using (resource, body))
+				.Select (_ => CreateResponseMessage (wresponse, request, cancellationToken));
 		}
 	}
 }
