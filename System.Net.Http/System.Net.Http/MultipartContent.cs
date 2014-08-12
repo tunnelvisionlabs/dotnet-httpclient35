@@ -154,7 +154,7 @@ namespace System.Net.Http
 				sb.Append ('\r').Append ('\n');
 					
 				buffer = Encoding.ASCII.GetBytes (sb.ToString ());
-				sb.Clear ();
+				sb.Length = 0;
 				await stream.WriteAsync (buffer, 0, buffer.Length).ConfigureAwait (false);
 
 				await c.SerializeToStreamAsync (stream, context).ConfigureAwait (false);
