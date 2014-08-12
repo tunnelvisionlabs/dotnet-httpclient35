@@ -105,8 +105,9 @@ namespace System.Net.Http
 		public void CancelPendingRequests ()
 		{
 			// Cancel only any already running requests not any new request after this cancellation
-			using (var c = Interlocked.Exchange (ref cts, new CancellationTokenSource ()))
-				c.Cancel ();
+			// NOTE: can't call dispose due to a bug in the .NET 3.5 implementation of CancellationTokenRegistration.Dispose
+			var c = Interlocked.Exchange (ref cts, new CancellationTokenSource ());
+			c.Cancel ();
 		}
 
 		protected override void Dispose (bool disposing)
@@ -264,7 +265,8 @@ namespace System.Net.Http
 
 		Task<HttpResponseMessage> SendAsyncWorker (HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
 		{
-			Func<Task<CancellationTokenSource>> acquireResource = () => CompletedTask.FromResult (CancellationTokenSource.CreateLinkedTokenSource (cts.Token, cancellationToken));
+			var currentSource = this.cts;
+			Func<Task<CancellationTokenSource>> acquireResource = () => CompletedTask.FromResult (CancellationTokenSource.CreateLinkedTokenSource (currentSource.Token, cancellationToken));
 			Func<Task<CancellationTokenSource>, Task<HttpResponseMessage>> body =
 				resourceTask =>
 				{
@@ -290,7 +292,8 @@ namespace System.Net.Http
 							}
 					
 							return CompletedTask.FromResult (response);
-						});
+						})
+						.Finally (_ => GC.KeepAlive(currentSource));
 				};
 
 			return TaskBlocks.Using (acquireResource, body);
