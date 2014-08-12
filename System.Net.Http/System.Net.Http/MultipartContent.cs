@@ -54,7 +54,7 @@ namespace System.Net.Http
 
 		public MultipartContent (string subtype, string boundary)
 		{
-			if (string.IsNullOrWhiteSpace (subtype))
+			if (StringEx.IsNullOrWhiteSpace (subtype))
 				throw new ArgumentException ("boundary");
 
 			//
@@ -62,7 +62,7 @@ namespace System.Net.Http
 			// of 1 to 70 characters from a set of characters known to be very robust through email gateways,
 			// and NOT ending with white space
 			//
-			if (string.IsNullOrWhiteSpace (boundary))
+			if (StringEx.IsNullOrWhiteSpace (boundary))
 				throw new ArgumentException ("boundary");
 
 			if (boundary.Length > 70)

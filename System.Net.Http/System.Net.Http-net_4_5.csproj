@@ -104,6 +104,7 @@
     <Compile Include="System.Net.Http\MultipartFormDataContent.cs" />
     <Compile Include="System.Net.Http\StreamContent.cs" />
     <Compile Include="System.Net.Http\StringContent.cs" />
+    <Compile Include="System.Net.Http\StringEx.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
