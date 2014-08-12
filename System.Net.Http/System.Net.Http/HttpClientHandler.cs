@@ -348,9 +348,7 @@ namespace System.Net.Http
 				}
 
 				if (cancellationToken.IsCancellationRequested) {
-					var cancelled = new TaskCompletionSource<HttpResponseMessage> ();
-					cancelled.SetCanceled ();
-					return await cancelled.Task;
+					return await CompletedTask.Canceled<HttpResponseMessage> ();
 				}
 			}
 			

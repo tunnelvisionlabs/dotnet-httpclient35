@@ -140,7 +140,8 @@ namespace System.Net.Http
 			sb.Append (boundary);
 			sb.Append ('\r').Append ('\n');
 
-			for (int i = 0; i < nested_content.Count; i++) {
+			int i = 0;
+			while (i < nested_content.Count) {
 				var c = nested_content [i];
 					
 				foreach (var h in c.Headers) {
@@ -165,6 +166,8 @@ namespace System.Net.Http
 					sb.Append (boundary);
 					sb.Append ('\r').Append ('\n');
 				}
+
+				i++;
 			}
 			
 			sb.Append ('\r').Append ('\n');
