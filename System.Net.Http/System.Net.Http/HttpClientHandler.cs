@@ -49,10 +49,10 @@ namespace System.Net.Http
 		bool useDefaultCredentials;
 		bool useProxy;
 		ClientCertificateOption certificate;
-		bool sentRequest;
+		int sentRequest;
 		HttpWebRequest wrequest;
 		string connectionGroupName;
-		bool disposed;
+		int disposed;
 
 		public HttpClientHandler ()
 		{
@@ -66,7 +66,7 @@ namespace System.Net.Http
 
 		internal void EnsureModifiability ()
 		{
-			if (sentRequest)
+			if (sentRequest != 0)
 				throw new InvalidOperationException (
 					"This instance has already started one or more requests. " +
 					"Properties can only be modified before sending the first request.");
@@ -224,9 +224,9 @@ namespace System.Net.Http
 			if (disposing) {
 				if (wrequest != null) {
 					wrequest.ServicePoint.CloseConnectionGroup (wrequest.ConnectionGroupName);
-					Volatile.Write (ref wrequest, null);
+					Interlocked.Exchange (ref wrequest, null);
 				}
-				Volatile.Write (ref disposed, true);
+				Interlocked.Exchange (ref disposed, 1);
 			}
 
 			base.Dispose (disposing);
@@ -311,10 +311,10 @@ namespace System.Net.Http
 
 		protected async internal override Task<HttpResponseMessage> SendAsync (HttpRequestMessage request, CancellationToken cancellationToken)
 		{
-			if (disposed)
+			if (disposed != 0)
 				throw new ObjectDisposedException (GetType ().ToString ());
 
-			Volatile.Write (ref sentRequest, true);
+			Interlocked.Exchange(ref sentRequest, 1);
 			wrequest = CreateWebRequest (request);
 
 			if (request.Content != null) {
