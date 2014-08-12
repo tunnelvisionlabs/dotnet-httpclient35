@@ -286,50 +286,76 @@ namespace System.Net.Http
 			}
 		}
 
-		public async Task<byte[]> GetByteArrayAsync (string requestUri)
+		public Task<byte[]> GetByteArrayAsync (string requestUri)
 		{
-			using (var resp = await GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).ConfigureAwait (false)) {
-				resp.EnsureSuccessStatusCode ();
-				return await resp.Content.ReadAsByteArrayAsync ().ConfigureAwait (false);
-			}
+			Func<Task<HttpResponseMessage>> resource = () => GetAsync (requestUri, HttpCompletionOption.ResponseContentRead);
+			Func<Task<HttpResponseMessage>, Task<byte[]>> body =
+				respTask => {
+					var resp = respTask.Result;
+					resp.EnsureSuccessStatusCode ();
+					return resp.Content.ReadAsByteArrayAsync ();
+				};
+
+			return TaskBlocks.Using (resource, body);
 		}
 
-		public async Task<byte[]> GetByteArrayAsync (Uri requestUri)
+		public Task<byte[]> GetByteArrayAsync (Uri requestUri)
 		{
-			using (var resp = await GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).ConfigureAwait (false)) {
-				resp.EnsureSuccessStatusCode ();
-				return await resp.Content.ReadAsByteArrayAsync ().ConfigureAwait (false);
-			}
+			Func<Task<HttpResponseMessage>> resource = () => GetAsync (requestUri, HttpCompletionOption.ResponseContentRead);
+			Func<Task<HttpResponseMessage>, Task<byte[]>> body =
+				respTask => {
+					var resp = respTask.Result;
+					resp.EnsureSuccessStatusCode ();
+					return resp.Content.ReadAsByteArrayAsync ();
+				};
+
+			return TaskBlocks.Using (resource, body);
 		}
 
-		public async Task<Stream> GetStreamAsync (string requestUri)
+		public Task<Stream> GetStreamAsync (string requestUri)
 		{
-			var resp = await GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).ConfigureAwait (false);
-			resp.EnsureSuccessStatusCode ();
-			return await resp.Content.ReadAsStreamAsync ().ConfigureAwait (false);
+			return GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).Then (
+				respTask => {
+					var resp = respTask.Result;
+					resp.EnsureSuccessStatusCode ();
+					return resp.Content.ReadAsStreamAsync ();
+				});
 		}
 
-		public async Task<Stream> GetStreamAsync (Uri requestUri)
+		public Task<Stream> GetStreamAsync (Uri requestUri)
 		{
-			var resp = await GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).ConfigureAwait (false);
-			resp.EnsureSuccessStatusCode ();
-			return await resp.Content.ReadAsStreamAsync ().ConfigureAwait (false);
+			return GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).Then (
+				respTask => {
+					var resp = respTask.Result;
+					resp.EnsureSuccessStatusCode ();
+					return resp.Content.ReadAsStreamAsync ();
+				});
 		}
 
-		public async Task<string> GetStringAsync (string requestUri)
+		public Task<string> GetStringAsync (string requestUri)
 		{
-			using (var resp = await GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).ConfigureAwait (false)) {
-				resp.EnsureSuccessStatusCode ();
-				return await resp.Content.ReadAsStringAsync ().ConfigureAwait (false);
-			}
+			Func<Task<HttpResponseMessage>> resource = () => GetAsync (requestUri, HttpCompletionOption.ResponseContentRead);
+			Func<Task<HttpResponseMessage>, Task<string>> body =
+				respTask => {
+					var resp = respTask.Result;
+					resp.EnsureSuccessStatusCode ();
+					return resp.Content.ReadAsStringAsync ();
+				};
+
+			return TaskBlocks.Using (resource, body);
 		}
 
-		public async Task<string> GetStringAsync (Uri requestUri)
+		public Task<string> GetStringAsync (Uri requestUri)
 		{
-			using (var resp = await GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).ConfigureAwait (false)) {
-				resp.EnsureSuccessStatusCode ();
-				return await resp.Content.ReadAsStringAsync ().ConfigureAwait (false);
-			}
+			Func<Task<HttpResponseMessage>> resource = () => GetAsync (requestUri, HttpCompletionOption.ResponseContentRead);
+			Func<Task<HttpResponseMessage>, Task<string>> body =
+				respTask => {
+					var resp = respTask.Result;
+					resp.EnsureSuccessStatusCode ();
+					return resp.Content.ReadAsStringAsync ();
+				};
+
+			return TaskBlocks.Using (resource, body);
 		}
 	}
 }
