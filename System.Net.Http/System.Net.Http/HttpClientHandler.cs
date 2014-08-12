@@ -279,7 +279,7 @@ namespace System.Net.Http
 			var headers = wr.Headers;
 			foreach (var header in request.Headers) {
 				foreach (var value in header.Value) {
-					headers.AddValue (header.Key, value);
+					headers.Add (header.Key, value);
 				}
 			}
 			
@@ -322,7 +322,7 @@ namespace System.Net.Http
 				var headers = wrequest.Headers;
 				foreach (var header in request.Content.Headers) {
 					foreach (var value in header.Value) {
-						headers.AddValue (header.Key, value);
+						headers.Add (header.Key, value);
 					}
 				}
 
