@@ -2,6 +2,7 @@
 obj/
 bin/
 packages/
+build/nuget/
 
 # Per-user files for Visual Studio
 *.suo
