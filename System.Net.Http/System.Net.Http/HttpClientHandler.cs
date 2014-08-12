@@ -236,7 +236,6 @@ namespace System.Net.Http
 		internal virtual HttpWebRequest CreateWebRequest (HttpRequestMessage request)
 		{
 			var wr = (HttpWebRequest) WebRequest.Create (request.RequestUri);
-			wr.ThrowOnError = false;
 
 			wr.ConnectionGroupName = connectionGroupName;
 			wr.Method = request.Method.Method;
@@ -340,8 +339,12 @@ namespace System.Net.Http
 				try {
 					wresponse = (HttpWebResponse) await wrequest.GetResponseAsync ().ConfigureAwait (false);
 				} catch (WebException we) {
-					if (we.Status != WebExceptionStatus.RequestCanceled)
+					if (we.Status == WebExceptionStatus.ProtocolError) {
+						// HttpClient shouldn't throw exceptions for these errors
+						wresponse = (HttpWebResponse) we.Response;
+					} else if (we.Status != WebExceptionStatus.RequestCanceled) {
 						throw;
+					}
 				}
 
 				if (cancellationToken.IsCancellationRequested) {
