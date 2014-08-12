@@ -94,7 +94,7 @@ namespace System.Net.Http
 				return timeout;
 			}
 			set {
-				if (value != System.Threading.Timeout.InfiniteTimeSpan && value < TimeSpan.Zero)
+				if (value != TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite) && value < TimeSpan.Zero)
 					throw new ArgumentOutOfRangeException ();
 
 				timeout = value;
