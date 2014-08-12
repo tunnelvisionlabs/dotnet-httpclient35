@@ -275,13 +275,8 @@ namespace System.Net.Http
 			}
 
 			// Add request headers
-			var headers = wr.Headers;
-			foreach (var header in request.Headers) {
-				foreach (var value in header.Value) {
-					headers.Add (header.Key, value);
-				}
-			}
-			
+			AddRequestHeaders(wr, request.Headers);
+
 			return wr;
 		}
 
@@ -319,12 +314,7 @@ namespace System.Net.Http
 
 			Task intermediate;
 			if (request.Content != null) {
-				var headers = wrequest.Headers;
-				foreach (var header in request.Content.Headers) {
-					foreach (var value in header.Value) {
-						headers.Add (header.Key, value);
-					}
-				}
+				AddContentHeaders(wrequest, request.Content.Headers);
 
 				intermediate = wrequest.GetRequestStreamAsync ()
 					.Then (streamTask => request.Content.CopyToAsync (streamTask.Result));
@@ -369,6 +359,95 @@ namespace System.Net.Http
 			return intermediate
 				.Then (_ => TaskBlocks.Using (resource, body))
 				.Select (_ => CreateResponseMessage (wresponse, request, cancellationToken));
+		}
+
+		private static void AddRequestHeaders(HttpWebRequest request, HttpRequestHeaders headers) {
+			foreach (var header in headers) {
+				switch (header.Key.ToLowerInvariant ()) {
+				case "accept":
+					request.Accept = headers.Accept.ToString ();
+					break;
+
+				case "connection":
+					request.Connection = headers.Connection.ToString ();
+					break;
+
+				case "date":
+					// .NET 3.5 does not expose a property for setting this reserved header
+					goto default;
+
+				case "expect":
+					request.Expect = headers.Expect.ToString ();
+					break;
+
+				case "host":
+					// .NET 3.5 does not expose a property for setting this reserved header
+					goto default;
+
+				case "if-modified-since":
+					request.IfModifiedSince = headers.IfModifiedSince.Value.UtcDateTime;
+					break;
+
+				case "range":
+					foreach (var range in headers.Range.Ranges) {
+						checked {
+							if (!string.IsNullOrEmpty(headers.Range.Unit)) {
+								if (range.To.HasValue)
+									request.AddRange (headers.Range.Unit, (int) range.From.Value, (int) range.To.Value);
+								else
+									request.AddRange (headers.Range.Unit, (int) range.From.Value);
+							} else {
+								if (range.To.HasValue)
+									request.AddRange ((int) range.From.Value, (int) range.To.Value);
+								else
+									request.AddRange ((int) range.From.Value);
+							}
+						}
+					}
+
+					break;
+
+				case "referer":
+					request.Referer = headers.Referrer.OriginalString;
+					break;
+
+				case "transfer-encoding":
+					request.TransferEncoding = headers.TransferEncoding.ToString ();
+					break;
+
+				case "user-agent":
+					request.UserAgent = headers.UserAgent.ToString ();
+					break;
+
+				default:
+					foreach (var value in header.Value) {
+						request.Headers.Add (header.Key, value);
+					}
+
+					break;
+				}
+			}
+		}
+
+		private static void AddContentHeaders(HttpWebRequest request, HttpContentHeaders headers) {
+			foreach (var header in headers) {
+				switch (header.Key.ToLowerInvariant ()) {
+				case "content-length":
+					request.ContentLength = headers.ContentLength.Value;
+					break;
+
+				case "content-type":
+					request.ContentType = headers.ContentType.ToString ();
+					break;
+
+				default:
+					foreach (var value in header.Value) {
+						request.Headers.Add (header.Key, value);
+					}
+
+					break;
+				}
+			}
 		}
 	}
 }
