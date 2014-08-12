@@ -44,6 +44,9 @@
     <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="..\lib\net_4_5\nunit.framework.dll" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Test\System.Net.Http.Headers\AuthenticationHeaderValueTest.cs" />
     <Compile Include="Test\System.Net.Http.Headers\CacheControlHeaderValueTest.cs" />
     <Compile Include="Test\System.Net.Http.Headers\ContentDispositionHeaderValueTest.cs" />
@@ -79,7 +82,9 @@
     <Compile Include="Test\System.Net.Http\StringContentTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="..\lib\net_4_5\nunit.framework.dll" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\corlib\corlib-net_4_5.csproj">
       <Project>{33BF0182-AC5C-464C-995B-C9CFE74E1A95}</Project>
       <Name>corlib\corlib-net_4_5</Name>
@@ -96,9 +101,6 @@
       <Project>{D92530F4-3F2B-4351-BD21-9D6BEE6D2A4E}</Project>
       <Name>System.Core\System.Core-net_4_5</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
