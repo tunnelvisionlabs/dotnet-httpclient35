@@ -37,6 +37,12 @@
     <WarningLevel>4</WarningLevel>
     <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\keys\HttpClient35.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Rackspace.Threading, Version=1.1.0.0, Culture=neutral, PublicKeyToken=8b3790928cb57ea0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -110,9 +116,13 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\keys\HttpClient35.snk">
+      <Link>HttpClient35.snk</Link>
+    </None>
     <None Include="packages.System.Net.Http-net_4_5.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\..\build\KeyReporting.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
