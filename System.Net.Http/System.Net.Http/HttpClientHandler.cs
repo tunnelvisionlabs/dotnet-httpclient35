@@ -235,7 +235,7 @@ namespace System.Net.Http
 
 		internal virtual HttpWebRequest CreateWebRequest (HttpRequestMessage request)
 		{
-			var wr = new HttpWebRequest (request.RequestUri);
+			var wr = (HttpWebRequest) WebRequest.Create (request.RequestUri);
 			wr.ThrowOnError = false;
 
 			wr.ConnectionGroupName = connectionGroupName;
