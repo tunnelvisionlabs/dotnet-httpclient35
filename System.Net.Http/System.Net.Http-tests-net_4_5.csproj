@@ -43,7 +43,6 @@
   <PropertyGroup>
     <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
   </PropertyGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="Test\System.Net.Http.Headers\AuthenticationHeaderValueTest.cs" />
     <Compile Include="Test\System.Net.Http.Headers\CacheControlHeaderValueTest.cs" />
@@ -77,25 +76,8 @@
     <Compile Include="Test\System.Net.Http\MultipartContentTest.cs" />
     <Compile Include="Test\System.Net.Http\MultipartFormDataContentTest.cs" />
     <Compile Include="Test\System.Net.Http\StreamContentTest.cs" />
-    <Compile Include="Test\System.Net.Http\StringContentTest.cs" />  </ItemGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <PropertyGroup>
-    <PreBuildEvent>
-
-    </PreBuildEvent>
-    <PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
-
-    </PostBuildEvent>
-    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
-
-    </PostBuildEvent>
-  </PropertyGroup>
+    <Compile Include="Test\System.Net.Http\StringContentTest.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="..\lib\net_4_5\nunit.framework.dll" />
     <ProjectReference Include="..\corlib\corlib-net_4_5.csproj">
@@ -118,5 +100,23 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-</Project>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
 
+    </PreBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+
+    </PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
+
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
