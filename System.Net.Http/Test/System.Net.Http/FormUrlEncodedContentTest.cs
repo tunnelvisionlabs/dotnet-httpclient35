@@ -30,7 +30,6 @@ using System;
 using NUnit.Framework;
 using System.Net.Http;
 using System.IO;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace MonoTests.System.Net.Http

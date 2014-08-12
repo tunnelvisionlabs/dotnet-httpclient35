@@ -35,6 +35,9 @@ using System.Net;
 
 namespace MonoTests.System.Net.Http
 {
+	extern alias tpl;
+	using AggregateException = tpl::System.AggregateException;
+
 	[TestFixture]
 	public class HttpClientHandlerTest
 	{

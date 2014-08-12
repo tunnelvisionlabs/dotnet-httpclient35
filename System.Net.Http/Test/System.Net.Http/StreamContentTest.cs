@@ -33,12 +33,15 @@ using NUnit.Framework;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.IO;
-using System.Threading.Tasks;
 using System.Net;
 using System.Linq;
 
 namespace MonoTests.System.Net.Http
 {
+	extern alias tpl;
+	using tpl::System.Threading.Tasks;
+	using AggregateException = tpl::System.AggregateException;
+
 	[TestFixture]
 	public class StreamContentTest
 	{

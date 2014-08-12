@@ -32,14 +32,20 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Net;
 using System.Linq;
 using System.IO;
+using ManualResetEvent = System.Threading.ManualResetEvent;
+using Timeout = System.Threading.Timeout;
 
 namespace MonoTests.System.Net.Http
 {
+	extern alias tpl;
+	using Rackspace.Threading;
+	using tpl::System.Threading;
+	using tpl::System.Threading.Tasks;
+	using AggregateException = tpl::System.AggregateException;
+
 	[TestFixture]
 	public class HttpClientTest
 	{
