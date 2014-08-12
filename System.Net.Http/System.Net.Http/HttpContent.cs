@@ -30,6 +30,7 @@ using System.Net.Http.Headers;
 using System.IO;
 using System.Threading.Tasks;
 using System.Text;
+using Rackspace.Threading;
 
 namespace System.Net.Http
 {
