@@ -8,7 +8,6 @@
     <ProjectGuid>{9862694D-E4FA-418B-8692-A0280FEDDF36}</ProjectGuid>
     <OutputType>Library</OutputType>
     <NoWarn>1699</NoWarn>
-    <OutputPath>./../../class/lib/net_4_5</OutputPath>
     <NoStdLib>True</NoStdLib>
     <NoConfig>True</NoConfig>
     
