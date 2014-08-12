@@ -27,8 +27,8 @@
 //
 
 using System.Collections.Generic;
-using System.Text;
 using System.Globalization;
+using System.Text;
 
 namespace System.Net.Http.Headers
 {
