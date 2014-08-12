@@ -29,16 +29,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class ContentDispositionHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -54,7 +54,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		/*
 		 * This fails on Windows with the .NET runtime:
 		 * 
@@ -64,7 +64,7 @@ namespace MonoTests.System.Net.Http.Headers
 		 * bei MonoTests.System.Net.Http.Headers.ContentDispositionHeaderValueTest.Equals()
 		 * 
 		 */
-		[Category ("NotWorking")]
+		[TestCategory ("NotWorking")]
 		public void Equals ()
 		{
 			var value = new ContentDispositionHeaderValue ("x");
@@ -79,7 +79,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreNotEqual (value, new ContentDispositionHeaderValue ("attachment") { FileName="g" }, "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = ContentDispositionHeaderValue.Parse ("attachment");
@@ -128,7 +128,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("%T4%8O%", res.FileNameStar, "#73");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -168,7 +168,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new ContentDispositionHeaderValue ("ttt");
@@ -199,7 +199,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (5, value.Size, "#17");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties_FileName ()
 		{
 			var value = new ContentDispositionHeaderValue ("a");
@@ -217,7 +217,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (new NameValueHeaderValue ("filename", "\"(@)\""), value.Parameters.First (), "#22");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties_FileNameStar ()
 		{
 			var value = new ContentDispositionHeaderValue ("a");
@@ -231,7 +231,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (new NameValueHeaderValue ("filename*", "utf-8''%C4%8D"), value.Parameters.First (), "#12");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties_ModificationDate ()
 		{
 			var value = new ContentDispositionHeaderValue ("a");
@@ -241,7 +241,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (new NameValueHeaderValue ("modification-date", "\"Thu, 30 Dec 2010 22:34:02 GMT\""), value.Parameters.First (), "#2");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties_Invalid ()
 		{
 			var value = new ContentDispositionHeaderValue ("a");
@@ -252,7 +252,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			ContentDispositionHeaderValue res;
@@ -261,7 +261,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("currency-sign=¤", res.FileNameStar, "#3");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			ContentDispositionHeaderValue res;

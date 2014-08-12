@@ -27,17 +27,17 @@
 //
 
 using System;
-using NUnit.Framework;
 using System.Net.Http;
 using System.IO;
 using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http
 {
-	[TestFixture]
+	[TestClass]
 	public class StringContentTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_Invalid ()
 		{
 			try {
@@ -53,7 +53,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor ()
 		{
 			using (var m = new StringContent ("abcd")) {
@@ -67,7 +67,7 @@ namespace MonoTests.System.Net.Http
 #endif
 		}
 
-		[Test]
+		[TestMethod]
 		public void CopyToAsync_Invalid ()
 		{
 			var sc = new StringContent ("");
@@ -78,7 +78,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void CopyToAsync ()
 		{
 			var sc = new StringContent ("gt");
@@ -89,14 +89,14 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (2, dest.Length, "#1");
 		}
 
-		[Test]
+		[TestMethod]
 		public void LoadIntoBuffer ()
 		{
 			var sc = new StringContent ("b");
 			sc.LoadIntoBufferAsync (400).Wait ();
 		}
 
-		[Test]
+		[TestMethod]
 		public void ReadAsByteArrayAsync ()
 		{
 			var sc = new StringContent ("h");
@@ -105,7 +105,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (104, res[0], "#2");
 		}
 
-		[Test]
+		[TestMethod]
 		public void ReadAsStringAsync ()
 		{
 			var sc = new StringContent ("abž");

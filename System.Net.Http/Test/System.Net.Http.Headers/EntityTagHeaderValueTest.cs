@@ -29,15 +29,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class EntityTagHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -53,7 +53,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var tfhv = new EntityTagHeaderValue ("\"abc\"");
@@ -62,7 +62,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreNotEqual (tfhv, new EntityTagHeaderValue ("\"AA\""), "#3");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = EntityTagHeaderValue.Parse ("\"c\"");
@@ -76,7 +76,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("W/\"mm\"", res.ToString (), "#13");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -99,7 +99,7 @@ namespace MonoTests.System.Net.Http.Headers
 		}
 
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var etv = new EntityTagHeaderValue ("\"tag\"", true);
@@ -110,7 +110,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsFalse (EntityTagHeaderValue.Any.IsWeak, "#4");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			EntityTagHeaderValue res;
@@ -118,7 +118,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("\"\"", res.Tag, "#2");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			EntityTagHeaderValue res;

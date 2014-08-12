@@ -29,15 +29,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class ViaHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -71,14 +71,14 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor_ValidArguments ()
 		{
 			new ViaHeaderValue ("a", "b", null);
 			new ViaHeaderValue ("a", "b", null, null);
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var value = new ViaHeaderValue ("ab", "x");
@@ -92,7 +92,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreNotEqual (value, new ViaHeaderValue ("Ab", "dd", "cc", "(c)"), "#6");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = ViaHeaderValue.Parse ("1.1 nowhere.com");
@@ -109,7 +109,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("foo/1.1 nowhere.com:43 ( lalala )", res.ToString (), "#14");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -137,7 +137,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new ViaHeaderValue ("s", "p");
@@ -157,7 +157,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("(cmt)", value.Comment, "#10");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			ViaHeaderValue res;
@@ -168,7 +168,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsNull (res.ProtocolName, "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			ViaHeaderValue res;

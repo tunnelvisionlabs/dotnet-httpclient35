@@ -29,15 +29,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class AuthenticationHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -53,7 +53,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var value = new AuthenticationHeaderValue ("ab");
@@ -67,7 +67,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreNotEqual (value, new AuthenticationHeaderValue ("Ab", "dd"), "#6");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = AuthenticationHeaderValue.Parse ("c");
@@ -82,7 +82,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("ss p=3 , q = \"vvv\"", res.ToString (), "#13");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -104,7 +104,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new AuthenticationHeaderValue ("s", "p");
@@ -116,7 +116,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsNull (value.Parameter, "#4");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			AuthenticationHeaderValue res;
@@ -125,7 +125,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsNull (res.Parameter, "#3");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			AuthenticationHeaderValue res;

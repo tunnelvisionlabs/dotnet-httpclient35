@@ -29,16 +29,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class RangeHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -60,7 +60,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var value = new RangeHeaderValue (4, null);
@@ -74,7 +74,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreNotEqual (value, new RangeHeaderValue (2, 3), "#6");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = RangeHeaderValue.Parse ("bytes=2-40");
@@ -118,7 +118,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("bytes=0-, -9", res.ToString (), "#55");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -158,7 +158,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new RangeHeaderValue (3, 9);
@@ -171,7 +171,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (0, value.Ranges.Count, "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties_Invalid ()
 		{
 			var value = new RangeHeaderValue ();
@@ -182,7 +182,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			RangeHeaderValue res;
@@ -192,7 +192,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (33, res.Ranges.First ().To, "#4");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			RangeHeaderValue res;

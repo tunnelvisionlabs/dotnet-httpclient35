@@ -30,19 +30,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using NUnit.Framework;
 using System.Net.Http;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Linq;
 using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http
 {
-	[TestFixture]
+	[TestClass]
 	public class HttpRequestMessageTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_Invalid ()
 		{
 			try {
@@ -52,7 +52,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor_Default ()
 		{
 			var m = new HttpRequestMessage ();
@@ -66,7 +66,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual ("Method: GET, RequestUri: '<null>', Version: 1.1, Content: <null>, Headers:\r\n{\r\n}", m.ToString (), "#7");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor_Uri ()
 		{
 			var c = new HttpRequestMessage (HttpMethod.Get, new Uri ("http://xamarin.com"));
@@ -88,7 +88,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor_RelativeUri ()
 		{
 			var client = new HttpClient ();
@@ -99,7 +99,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (req.RequestUri, uri);
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor_RelativeUriString ()
 		{
 			var client = new HttpClient ();
@@ -109,7 +109,7 @@ namespace MonoTests.System.Net.Http
 			Assert.IsFalse (req.RequestUri.IsAbsoluteUri);
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();
@@ -361,7 +361,7 @@ namespace MonoTests.System.Net.Http
 			));			
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_MultiValues ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();
@@ -424,7 +424,7 @@ namespace MonoTests.System.Net.Http
 			), "#10b");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_UserAgentExtra ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();
@@ -439,7 +439,7 @@ namespace MonoTests.System.Net.Http
 				});
 		}
 
-		[Test]
+		[TestMethod]
 		public void Header_BaseImplementation ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();
@@ -503,7 +503,7 @@ namespace MonoTests.System.Net.Http
 			Assert.IsNull (headers.Date, "#8");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_Invalid ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();
@@ -569,7 +569,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_Response ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();
@@ -587,7 +587,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual ("Method:GET,RequestUri:'<null>',Version:1.1,Content:<null>,Headers:{Age:vv}", normalized, "#3");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_ExpectContinue ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();
@@ -611,7 +611,7 @@ namespace MonoTests.System.Net.Http
 			Assert.IsTrue (headers.ExpectContinue.Value, "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_ConnectionClose ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();
@@ -631,7 +631,7 @@ namespace MonoTests.System.Net.Http
 			Assert.IsTrue (headers.ConnectionClose.Value, "#4");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_From_Invalid ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();
@@ -650,7 +650,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_TransferEncodingChunked ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();
@@ -667,7 +667,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (1, headers.TransferEncoding.Count, "#3b");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var c = new HttpRequestMessage ();
@@ -684,7 +684,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (HttpVersion.Version10, c.Version, "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties_Invalid ()
 		{
 			var c = new HttpRequestMessage ();

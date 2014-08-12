@@ -29,15 +29,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class RetryConditionHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -47,7 +47,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var value = new RetryConditionHeaderValue (new DateTimeOffset (DateTime.Today));
@@ -59,7 +59,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreNotEqual (value, new RetryConditionHeaderValue (new TimeSpan (44)), "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = RetryConditionHeaderValue.Parse ("144");
@@ -73,7 +73,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("Fri, 31 Dec 1999 23:59:59 GMT", res.ToString (), "#13");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -95,7 +95,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new RetryConditionHeaderValue (new TimeSpan (5000));
@@ -107,7 +107,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsNull (value.Delta, "#4");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			RetryConditionHeaderValue res;
@@ -116,7 +116,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (new TimeSpan (0, 2, 4), res.Delta, "#3");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			RetryConditionHeaderValue res;

@@ -29,15 +29,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class ProductInfoHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -59,7 +59,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var value = new ProductInfoHeaderValue ("(ab)");
@@ -73,7 +73,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (value, new ProductInfoHeaderValue ("Ab", "dd"), "#6");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = ProductInfoHeaderValue.Parse ("c");
@@ -94,7 +94,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("(  cccc )", res.ToString (), "#23");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -116,7 +116,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new ProductInfoHeaderValue ("s", "p");
@@ -129,7 +129,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsNull (value.Product, "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			ProductInfoHeaderValue res;
@@ -138,7 +138,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsNull (res.Comment, "#3");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			ProductInfoHeaderValue res;

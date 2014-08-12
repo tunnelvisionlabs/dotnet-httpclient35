@@ -29,15 +29,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class MediaTypeHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -53,7 +53,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var value = new MediaTypeHeaderValue ("multipart/*");
@@ -69,7 +69,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (value, custom_param, "#6");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = MediaTypeHeaderValue.Parse ("multipart  / b*  ");
@@ -83,7 +83,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("mu/m; CHarset=jj'", res.ToString (), "#2c");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -105,7 +105,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new MediaTypeHeaderValue ("multipart/*");
@@ -121,7 +121,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("te-va", value.CharSet, "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties_Invalid ()
 		{
 			var value = new MediaTypeHeaderValue ("multipart/*");
@@ -139,7 +139,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			MediaTypeHeaderValue res;
@@ -148,7 +148,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsNull (res.CharSet, "#3");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			MediaTypeHeaderValue res;

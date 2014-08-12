@@ -29,17 +29,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class HttpHeaderValueCollectionTest
 	{
-		[Test]
+		[TestMethod]
 		public void ParseAdd ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();
@@ -50,7 +50,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (1, headers.TE.Count);
 		}
 
-		[Test]
+		[TestMethod]
 		public void ParseAdd_Invalid ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();
@@ -62,7 +62,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParseAdd ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();
@@ -75,7 +75,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsFalse (headers.Via.TryParseAdd ("wrong"), "#4");
 		}
 
-		[Test]
+		[TestMethod]
 		public void ToStringTest ()
 		{
 			HttpRequestMessage message = new HttpRequestMessage ();

@@ -29,16 +29,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class MediaTypeWithQualityHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -60,7 +60,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var value = new MediaTypeWithQualityHeaderValue ("audio/x");
@@ -74,7 +74,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreNotEqual (value, new MediaTypeWithQualityHeaderValue ("audio/Y", 0.6), "#6");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = MediaTypeWithQualityHeaderValue.Parse ("audio/ aa");
@@ -83,7 +83,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("audio/aa", res.ToString (), "#1c");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -105,7 +105,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new MediaTypeWithQualityHeaderValue ("audio/*", 0.3);
@@ -117,7 +117,7 @@ namespace MonoTests.System.Net.Http.Headers
 			value.Parameters.Add (new NameValueHeaderValue ("q", "b"));
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			MediaTypeWithQualityHeaderValue res;
@@ -125,7 +125,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (0, res.Parameters.Count, "#1");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			MediaTypeWithQualityHeaderValue res;

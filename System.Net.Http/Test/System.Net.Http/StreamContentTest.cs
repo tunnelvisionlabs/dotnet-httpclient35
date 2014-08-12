@@ -29,12 +29,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using System.Net;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http
 {
@@ -42,7 +42,7 @@ namespace MonoTests.System.Net.Http
 	using tpl::System.Threading.Tasks;
 	using AggregateException = tpl::System.AggregateException;
 
-	[TestFixture]
+	[TestClass]
 	public class StreamContentTest
 	{
 		class StreamContentMock : StreamContent
@@ -107,7 +107,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor_Invalid ()
 		{
 			try {
@@ -123,7 +123,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor ()
 		{
 			var ms = new MemoryStream ();
@@ -133,7 +133,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void CopyToAsync_Invalid ()
 		{
 			var m = new MemoryStream ();
@@ -158,12 +158,12 @@ namespace MonoTests.System.Net.Http
 			*/ 
 		}
 
-		[Test]
+		[TestMethod]
 		/*
 		 * The .NET runtime hits the "#9" assertion.
 		 * The test succeeds with Mono.
 		 */
-		[Category ("NotWorking")]
+		[TestCategory ("NotWorking")]
 		public void CopyToAsync ()
 		{
 			var ms = new MemoryStream ();
@@ -192,7 +192,7 @@ namespace MonoTests.System.Net.Http
 			Assert.IsTrue (hit, "#10");
 		}
 
-		[Test]
+		[TestMethod]
 		public void CopyToAsync_ClosedInput ()
 		{
 			var stream = new MemoryStream (new byte[] { 1 });
@@ -204,7 +204,7 @@ namespace MonoTests.System.Net.Http
 			Assert.IsTrue (content.CopyToAsync (stream_out).Wait (3000), "#2");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers ()
 		{
 			var ms = new MemoryStream ();
@@ -305,14 +305,14 @@ namespace MonoTests.System.Net.Http
 
 			Assert.AreEqual (23, headers.ContentLength);
 			Assert.AreEqual (new Uri ("http://xamarin.com"), headers.ContentLocation);
-			Assert.AreEqual (new byte[] { 3, 5 }, headers.ContentMD5);
+			CollectionAssert.AreEqual (new byte[] { 3, 5 }, headers.ContentMD5);
 			Assert.AreEqual (new ContentRangeHeaderValue (88, 444), headers.ContentRange);
 			Assert.AreEqual (new MediaTypeHeaderValue ("multipart/*"), headers.ContentType);
 			Assert.AreEqual (new DateTimeOffset (DateTime.Today), headers.Expires);
 			Assert.AreEqual (new DateTimeOffset (DateTime.Today), headers.LastModified);
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_ToString ()
 		{
 			var sc = new StreamContent (new MemoryStream ());
@@ -322,7 +322,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual ("Content-MD5: AwU=\r\n", headers.ToString (), "#1");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_Invalid ()
 		{
 			var sc = new StreamContent (MemoryStream.Null);
@@ -335,7 +335,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_Multi ()
 		{
 			var sc = new StreamContent (MemoryStream.Null);
@@ -350,7 +350,7 @@ namespace MonoTests.System.Net.Http
 			), "#1b");
 		}
 
-		[Test]
+		[TestMethod]
 		public void LoadIntoBuffer ()
 		{
 			var ms = new MemoryStream ();
@@ -361,7 +361,7 @@ namespace MonoTests.System.Net.Http
 			Assert.IsTrue (sc.LoadIntoBufferAsync (400).Wait (200));
 		}
 
-		[Test]
+		[TestMethod]
 		public void LoadIntoBuffer_BufferOverflow ()
 		{
 			var ms = new MemoryStream ();
@@ -377,7 +377,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void ReadAsByteArrayAsync ()
 		{
 			var ms = new MemoryStream ();
@@ -395,7 +395,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (55, res[1], "#11");
 		}
 
-		[Test]
+		[TestMethod]
 		public void ReadAsString ()
 		{
 			var ms = new MemoryStream ();
@@ -408,7 +408,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual ("M7", res, "#1");
 		}
 
-		[Test]
+		[TestMethod]
 		public void ReadAsStream ()
 		{
 			var ms = new MemoryStream ();
@@ -421,7 +421,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (77, res.ReadByte (), "#1");
 		}
 
-		[Test]
+		[TestMethod]
 		public void ReadAsStreamAsync_ClosedInput ()
 		{
 			var stream = new MemoryStream (new byte[] { 1 });
@@ -435,7 +435,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (1, stream_read.Length, "#4");
 		}
 
-		[Test]
+		[TestMethod]
 		public void ContentLengthAfterLoad ()
 		{
 			var sc = new StreamContent (new CannotSeekStream ());
