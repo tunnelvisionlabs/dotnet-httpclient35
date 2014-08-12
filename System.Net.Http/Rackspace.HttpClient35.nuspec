@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Rackspace.HttpClient35</id>
+    <version>0.0.0</version>
+    <title>System.Net.Http for .NET 3.5</title>
+    <authors>Sam Harwell</authors>
+    <owners>Sam Harwell</owners>
+    <licenseUrl>https://raw.github.com/rackerlabs/dotnet-httpclient35/v$version$/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/rackerlabs/dotnet-httpclient35</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>A port of Mono's implementation of the complete System.Net.Http assembly to .NET 3.5.</description>
+    <releaseNotes>https://github.com/rackerlabs/dotnet-httpclient35/releases/v$version$</releaseNotes>
+    <copyright></copyright>
+    <tags>httpclient</tags>
+    <dependencies>
+      <group targetFramework="3.5">
+        <dependency id="Rackspace.Threading" version="[1.1, 1.2)" />
+        <dependency id="TaskParallelLibrary" version="1.0.2856.0" />
+      </group>
+      <group targetFramework="4.0">
+        <!-- Only the .NET Framework 3.5 needs a dependency. All other frameworks use this empty group. -->
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+
+    <!-- Runtime libraries -->
+    <file src="bin\$Configuration$\System.Net.Http.dll" target="lib\net35"/>
+    <file src="bin\$Configuration$\System.Net.Http.pdb" target="lib\net35"/>
+
+    <!-- Source code -->
+    <file src="**\*.cs" exclude="obj\**.cs;Test\**.cs" target="src" />
+
+  </files>
+</package>
