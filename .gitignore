@@ -1,0 +1,11 @@
+# Build folders
+obj/
+bin/
+packages/
+
+# Per-user files for Visual Studio
+*.suo
+*.csproj.user
+
+# Roslyn IntelliSense Cache
+*.sln.ide/
