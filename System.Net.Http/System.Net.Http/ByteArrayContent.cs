@@ -61,7 +61,7 @@ namespace System.Net.Http
 
 		protected override Task<Stream> CreateContentReadStreamAsync ()
 		{
-			return Task.FromResult<Stream> (new MemoryStream (content, offset, count));
+			return CompletedTask.FromResult<Stream> (new MemoryStream (content, offset, count));
 		}
 
 		protected internal override Task SerializeToStreamAsync (Stream stream, TransportContext context)
