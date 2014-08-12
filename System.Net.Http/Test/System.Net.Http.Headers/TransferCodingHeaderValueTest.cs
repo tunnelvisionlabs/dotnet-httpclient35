@@ -29,16 +29,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class TransferCodingHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_Invalid ()
 		{
 			try {
@@ -54,7 +54,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var tfhv = new TransferCodingHeaderValue ("abc");
@@ -73,7 +73,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (tfhv, tfhv2, "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = TransferCodingHeaderValue.Parse ("content");
@@ -97,7 +97,7 @@ namespace MonoTests.System.Net.Http.Headers
 
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -131,7 +131,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			TransferCodingHeaderValue res;
@@ -139,7 +139,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("content", res.Value, "#2");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			TransferCodingHeaderValue res;
@@ -147,7 +147,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsNull (res, "#2");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Value ()
 		{
 			var tfhv = new TransferCodingHeaderValue ("value");

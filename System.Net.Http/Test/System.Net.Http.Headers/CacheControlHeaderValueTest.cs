@@ -29,16 +29,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class CacheControlHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_Default ()
 		{
 			var value = new CacheControlHeaderValue ();
@@ -60,7 +60,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsNull (value.SharedMaxAge, "#15");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var value = new CacheControlHeaderValue ();
@@ -68,7 +68,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreNotEqual (value, new CacheControlHeaderValue () { MustRevalidate = true }, "#2");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = CacheControlHeaderValue.Parse ("audio");
@@ -114,7 +114,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("private=\"nnn, oo, xx\", bb=\" x \"", res.ToString (), "#44");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -136,7 +136,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new CacheControlHeaderValue () {
@@ -172,7 +172,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (TimeSpan.MaxValue, value.SharedMaxAge, "#15");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			CacheControlHeaderValue res;
@@ -180,7 +180,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (1, res.Extensions.Count, "#2");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			MediaTypeWithQualityHeaderValue res;

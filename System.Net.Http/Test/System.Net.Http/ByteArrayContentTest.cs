@@ -27,17 +27,16 @@
 //
 
 using System;
-using NUnit.Framework;
 using System.Net.Http;
 using System.IO;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http
 {
-	[TestFixture]
+	[TestClass]
 	public class ByteArrayContentTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_Invalid ()
 		{
 			try {
@@ -65,7 +64,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor ()
 		{
 			byte[] b = { 4, 6 };
@@ -74,7 +73,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void CopyTo_Invalid ()
 		{
 			var m = new MemoryStream ();
@@ -87,7 +86,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void CopyToAsync ()
 		{
 			byte[] b = { 4, 2 };
@@ -100,7 +99,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (2, dest.Length, "#1");
 		}
 
-		[Test]
+		[TestMethod]
 		public void LoadIntoBufferAsync ()
 		{
 			byte[] b = { 4 };
@@ -110,7 +109,7 @@ namespace MonoTests.System.Net.Http
 			Assert.IsTrue (t.Wait (500));
 		}
 
-		[Test]
+		[TestMethod]
 		public void ReadAsByteArrayAsync ()
 		{
 			byte[] b = { 4, 55 };
@@ -126,7 +125,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (55, res[1], "#11");
 		}
 
-		[Test]
+		[TestMethod]
 		public void ReadAsStringAsync ()
 		{
 			byte[] b = { 77, 55 };

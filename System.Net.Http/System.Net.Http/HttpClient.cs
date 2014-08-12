@@ -30,6 +30,7 @@ using System.Threading;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.IO;
+using Rackspace.Threading;
 
 namespace System.Net.Http
 {
@@ -94,7 +95,7 @@ namespace System.Net.Http
 				return timeout;
 			}
 			set {
-				if (value != System.Threading.Timeout.InfiniteTimeSpan && value < TimeSpan.Zero)
+				if (value != TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite) && value < TimeSpan.Zero)
 					throw new ArgumentOutOfRangeException ();
 
 				timeout = value;
@@ -104,8 +105,9 @@ namespace System.Net.Http
 		public void CancelPendingRequests ()
 		{
 			// Cancel only any already running requests not any new request after this cancellation
-			using (var c = Interlocked.Exchange (ref cts, new CancellationTokenSource ()))
-				c.Cancel ();
+			// NOTE: can't call dispose due to a bug in the .NET 3.5 implementation of CancellationTokenRegistration.Dispose
+			var c = Interlocked.Exchange (ref cts, new CancellationTokenSource ());
+			c.Cancel ();
 		}
 
 		protected override void Dispose (bool disposing)
@@ -261,74 +263,112 @@ namespace System.Net.Http
 			return SendAsyncWorker (request, completionOption, cancellationToken);
 		}
 
-		async Task<HttpResponseMessage> SendAsyncWorker (HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+		Task<HttpResponseMessage> SendAsyncWorker (HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
 		{
-			using (var lcts = CancellationTokenSource.CreateLinkedTokenSource (cts.Token, cancellationToken)) {
-				lcts.CancelAfter (timeout);
+			var currentSource = this.cts;
+			Func<Task<CancellationTokenSource>> acquireResource = () => CompletedTask.FromResult (CancellationTokenSource.CreateLinkedTokenSource (currentSource.Token, cancellationToken));
+			Func<Task<CancellationTokenSource>, Task<HttpResponseMessage>> body =
+				resourceTask =>
+				{
+					var lcts = resourceTask.Result;
+					lcts.CancelAfter (timeout);
 
-				var task = base.SendAsync (request, lcts.Token);
-				if (task == null)
-					throw new InvalidOperationException ("Handler failed to return a value");
+					var task = base.SendAsync (request, lcts.Token);
+					if (task == null)
+						throw new InvalidOperationException ("Handler failed to return a value");
+
+					return task.Then (
+						responseTask => {
+							var response = responseTask.Result;
+							if (response == null)
+								throw new InvalidOperationException ("Handler failed to return a response");
+
+							//
+							// Read the content when default HttpCompletionOption.ResponseContentRead is set
+							//
+							if (response.Content != null && (completionOption & HttpCompletionOption.ResponseHeadersRead) == 0) {
+								return response.Content.LoadIntoBufferAsync (MaxResponseContentBufferSize)
+									.Select (_ => response);
+							}
 					
-				var response = await task.ConfigureAwait (false);
-				if (response == null)
-					throw new InvalidOperationException ("Handler failed to return a response");
+							return CompletedTask.FromResult (response);
+						})
+						.Finally (_ => GC.KeepAlive(currentSource));
+				};
 
-				//
-				// Read the content when default HttpCompletionOption.ResponseContentRead is set
-				//
-				if (response.Content != null && (completionOption & HttpCompletionOption.ResponseHeadersRead) == 0) {
-					await response.Content.LoadIntoBufferAsync (MaxResponseContentBufferSize).ConfigureAwait (false);
-				}
-					
-				return response;
-			}
+			return TaskBlocks.Using (acquireResource, body);
 		}
 
-		public async Task<byte[]> GetByteArrayAsync (string requestUri)
+		public Task<byte[]> GetByteArrayAsync (string requestUri)
 		{
-			using (var resp = await GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).ConfigureAwait (false)) {
-				resp.EnsureSuccessStatusCode ();
-				return await resp.Content.ReadAsByteArrayAsync ().ConfigureAwait (false);
-			}
+			Func<Task<HttpResponseMessage>> resource = () => GetAsync (requestUri, HttpCompletionOption.ResponseContentRead);
+			Func<Task<HttpResponseMessage>, Task<byte[]>> body =
+				respTask => {
+					var resp = respTask.Result;
+					resp.EnsureSuccessStatusCode ();
+					return resp.Content.ReadAsByteArrayAsync ();
+				};
+
+			return TaskBlocks.Using (resource, body);
 		}
 
-		public async Task<byte[]> GetByteArrayAsync (Uri requestUri)
+		public Task<byte[]> GetByteArrayAsync (Uri requestUri)
 		{
-			using (var resp = await GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).ConfigureAwait (false)) {
-				resp.EnsureSuccessStatusCode ();
-				return await resp.Content.ReadAsByteArrayAsync ().ConfigureAwait (false);
-			}
+			Func<Task<HttpResponseMessage>> resource = () => GetAsync (requestUri, HttpCompletionOption.ResponseContentRead);
+			Func<Task<HttpResponseMessage>, Task<byte[]>> body =
+				respTask => {
+					var resp = respTask.Result;
+					resp.EnsureSuccessStatusCode ();
+					return resp.Content.ReadAsByteArrayAsync ();
+				};
+
+			return TaskBlocks.Using (resource, body);
 		}
 
-		public async Task<Stream> GetStreamAsync (string requestUri)
+		public Task<Stream> GetStreamAsync (string requestUri)
 		{
-			var resp = await GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).ConfigureAwait (false);
-			resp.EnsureSuccessStatusCode ();
-			return await resp.Content.ReadAsStreamAsync ().ConfigureAwait (false);
+			return GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).Then (
+				respTask => {
+					var resp = respTask.Result;
+					resp.EnsureSuccessStatusCode ();
+					return resp.Content.ReadAsStreamAsync ();
+				});
 		}
 
-		public async Task<Stream> GetStreamAsync (Uri requestUri)
+		public Task<Stream> GetStreamAsync (Uri requestUri)
 		{
-			var resp = await GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).ConfigureAwait (false);
-			resp.EnsureSuccessStatusCode ();
-			return await resp.Content.ReadAsStreamAsync ().ConfigureAwait (false);
+			return GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).Then (
+				respTask => {
+					var resp = respTask.Result;
+					resp.EnsureSuccessStatusCode ();
+					return resp.Content.ReadAsStreamAsync ();
+				});
 		}
 
-		public async Task<string> GetStringAsync (string requestUri)
+		public Task<string> GetStringAsync (string requestUri)
 		{
-			using (var resp = await GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).ConfigureAwait (false)) {
-				resp.EnsureSuccessStatusCode ();
-				return await resp.Content.ReadAsStringAsync ().ConfigureAwait (false);
-			}
+			Func<Task<HttpResponseMessage>> resource = () => GetAsync (requestUri, HttpCompletionOption.ResponseContentRead);
+			Func<Task<HttpResponseMessage>, Task<string>> body =
+				respTask => {
+					var resp = respTask.Result;
+					resp.EnsureSuccessStatusCode ();
+					return resp.Content.ReadAsStringAsync ();
+				};
+
+			return TaskBlocks.Using (resource, body);
 		}
 
-		public async Task<string> GetStringAsync (Uri requestUri)
+		public Task<string> GetStringAsync (Uri requestUri)
 		{
-			using (var resp = await GetAsync (requestUri, HttpCompletionOption.ResponseContentRead).ConfigureAwait (false)) {
-				resp.EnsureSuccessStatusCode ();
-				return await resp.Content.ReadAsStringAsync ().ConfigureAwait (false);
-			}
+			Func<Task<HttpResponseMessage>> resource = () => GetAsync (requestUri, HttpCompletionOption.ResponseContentRead);
+			Func<Task<HttpResponseMessage>, Task<string>> body =
+				respTask => {
+					var resp = respTask.Result;
+					resp.EnsureSuccessStatusCode ();
+					return resp.Content.ReadAsStringAsync ();
+				};
+
+			return TaskBlocks.Using (resource, body);
 		}
 	}
 }

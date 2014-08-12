@@ -30,18 +30,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using NUnit.Framework;
 using System.Net.Http;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http
 {
-	[TestFixture]
+	[TestClass]
 	public class HttpResponseMessageTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_Invalid ()
 		{
 			try {
@@ -51,7 +51,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor_Default ()
 		{
 			var m = new HttpResponseMessage ();
@@ -67,7 +67,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual ("StatusCode: 200, ReasonPhrase: 'OK', Version: 1.1, Content: <null>, Headers:\r\n{\r\n}", m.ToString (), "#9");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers ()
 		{
 			HttpResponseMessage message = new HttpResponseMessage ();
@@ -238,7 +238,7 @@ namespace MonoTests.System.Net.Http
 			));
 		}
 
-		[Test]
+		[TestMethod]
 		public void EnsureSuccessStatusCode ()
 		{
 			HttpResponseMessage message = new HttpResponseMessage ();
@@ -254,7 +254,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_GetEnumerator ()
 		{
 			HttpResponseMessage message = new HttpResponseMessage ();
@@ -294,7 +294,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (3, i, "#10");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_MultiValues ()
 		{
 			var message = new HttpResponseMessage ();
@@ -344,7 +344,7 @@ namespace MonoTests.System.Net.Http
 			), "#4b");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Header_BaseImplementation ()
 		{
 			HttpResponseMessage message = new HttpResponseMessage ();
@@ -383,7 +383,7 @@ namespace MonoTests.System.Net.Http
 			headers.Clear ();
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_Invalid ()
 		{
 			HttpResponseMessage message = new HttpResponseMessage ();
@@ -449,7 +449,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_Request ()
 		{
 			HttpResponseMessage message = new HttpResponseMessage ();
@@ -463,7 +463,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual ("audio", headers.GetValues ("Accept").First (), "#2");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_ConnectionClose ()
 		{
 			HttpResponseMessage message = new HttpResponseMessage ();
@@ -487,7 +487,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual ("StatusCode:200,ReasonPhrase:'OK',Version:1.1,Content:<null>,Headers:{Connection:Close}", normalized, "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_Location ()
 		{
 			HttpResponseMessage message = new HttpResponseMessage ();
@@ -496,7 +496,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (new Uri ("http://w3.org"), headers.Location);
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_TransferEncoding ()
 		{
 			HttpResponseMessage message = new HttpResponseMessage ();
@@ -511,7 +511,7 @@ namespace MonoTests.System.Net.Http
 			// Assert.AreEqual ("mmm, zz, ▀", a.ToString (), "#2");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Headers_TransferEncodingChunked ()
 		{
 			HttpResponseMessage message = new HttpResponseMessage ();
@@ -541,7 +541,7 @@ namespace MonoTests.System.Net.Http
 			Assert.IsNull (headers.TransferEncodingChunked, "#6");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var c = new HttpResponseMessage ();
@@ -560,7 +560,7 @@ namespace MonoTests.System.Net.Http
 			Assert.IsFalse (c.IsSuccessStatusCode, "#6");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties_Invalid ()
 		{
 			var c = new HttpResponseMessage ();

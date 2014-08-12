@@ -27,18 +27,17 @@
 //
 
 using System;
-using NUnit.Framework;
 using System.Net.Http;
 using System.IO;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http
 {
-	[TestFixture]
+	[TestClass]
 	public class FormUrlEncodedContentTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_Invalid ()
 		{
 			try {
@@ -48,7 +47,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor ()
 		{
 			var s = new List<KeyValuePair<string, string>> () {

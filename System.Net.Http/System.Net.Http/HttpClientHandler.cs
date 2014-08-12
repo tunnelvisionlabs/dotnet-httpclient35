@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Specialized;
 using System.Net.Http.Headers;
+using Rackspace.Threading;
 
 namespace System.Net.Http
 {
@@ -49,10 +50,10 @@ namespace System.Net.Http
 		bool useDefaultCredentials;
 		bool useProxy;
 		ClientCertificateOption certificate;
-		bool sentRequest;
+		int sentRequest;
 		HttpWebRequest wrequest;
 		string connectionGroupName;
-		bool disposed;
+		int disposed;
 
 		public HttpClientHandler ()
 		{
@@ -66,7 +67,7 @@ namespace System.Net.Http
 
 		internal void EnsureModifiability ()
 		{
-			if (sentRequest)
+			if (sentRequest != 0)
 				throw new InvalidOperationException (
 					"This instance has already started one or more requests. " +
 					"Properties can only be modified before sending the first request.");
@@ -224,9 +225,9 @@ namespace System.Net.Http
 			if (disposing) {
 				if (wrequest != null) {
 					wrequest.ServicePoint.CloseConnectionGroup (wrequest.ConnectionGroupName);
-					Volatile.Write (ref wrequest, null);
+					Interlocked.Exchange (ref wrequest, null);
 				}
-				Volatile.Write (ref disposed, true);
+				Interlocked.Exchange (ref disposed, 1);
 			}
 
 			base.Dispose (disposing);
@@ -234,8 +235,7 @@ namespace System.Net.Http
 
 		internal virtual HttpWebRequest CreateWebRequest (HttpRequestMessage request)
 		{
-			var wr = new HttpWebRequest (request.RequestUri);
-			wr.ThrowOnError = false;
+			var wr = (HttpWebRequest) WebRequest.Create (request.RequestUri);
 
 			wr.ConnectionGroupName = connectionGroupName;
 			wr.Method = request.Method.Method;
@@ -275,13 +275,8 @@ namespace System.Net.Http
 			}
 
 			// Add request headers
-			var headers = wr.Headers;
-			foreach (var header in request.Headers) {
-				foreach (var value in header.Value) {
-					headers.AddValue (header.Key, value);
-				}
-			}
-			
+			AddRequestHeaders(wr, request.Headers);
+
 			return wr;
 		}
 
@@ -309,48 +304,150 @@ namespace System.Net.Http
 			return response;
 		}
 
-		protected async internal override Task<HttpResponseMessage> SendAsync (HttpRequestMessage request, CancellationToken cancellationToken)
+		protected internal override Task<HttpResponseMessage> SendAsync (HttpRequestMessage request, CancellationToken cancellationToken)
 		{
-			if (disposed)
+			if (disposed != 0)
 				throw new ObjectDisposedException (GetType ().ToString ());
 
-			Volatile.Write (ref sentRequest, true);
+			Interlocked.Exchange(ref sentRequest, 1);
 			wrequest = CreateWebRequest (request);
 
+			Task intermediate;
 			if (request.Content != null) {
-				var headers = wrequest.Headers;
-				foreach (var header in request.Content.Headers) {
-					foreach (var value in header.Value) {
-						headers.AddValue (header.Key, value);
-					}
-				}
+				AddContentHeaders(wrequest, request.Content.Headers);
 
-				var stream = await wrequest.GetRequestStreamAsync ().ConfigureAwait (false);
-				await request.Content.CopyToAsync (stream).ConfigureAwait (false);
+				intermediate = wrequest.GetRequestStreamAsync ()
+					.Then (streamTask => request.Content.CopyToAsync (streamTask.Result));
 			} else if (HttpMethod.Post.Equals (request.Method) || HttpMethod.Put.Equals (request.Method) || HttpMethod.Delete.Equals (request.Method)) {
 				// Explicitly set this to make sure we're sending a "Content-Length: 0" header.
 				// This fixes the issue that's been reported on the forums:
 				// http://forums.xamarin.com/discussion/17770/length-required-error-in-http-post-since-latest-release
 				wrequest.ContentLength = 0;
+				intermediate = CompletedTask.Default;
+			} else {
+				intermediate = CompletedTask.Default;
 			}
 
 			HttpWebResponse wresponse = null;
-			using (cancellationToken.Register (l => ((HttpWebRequest) l).Abort (), wrequest)) {
-				try {
-					wresponse = (HttpWebResponse) await wrequest.GetResponseAsync ().ConfigureAwait (false);
-				} catch (WebException we) {
-					if (we.Status != WebExceptionStatus.RequestCanceled)
-						throw;
-				}
+			Func<Task<IDisposable>> resource =
+				() => CompletedTask.FromResult<IDisposable> (cancellationToken.Register (l => ((HttpWebRequest) l).Abort (), wrequest));
+			Func<Task<IDisposable>, Task> body =
+				_ => {
+					return wrequest.GetResponseAsync ().Select(task => wresponse = (HttpWebResponse)task.Result)
+						.Catch<WebException> (
+							(task, we) => {
+								if (we.Status == WebExceptionStatus.ProtocolError) {
+									// HttpClient shouldn't throw exceptions for these errors
+									wresponse = (HttpWebResponse) we.Response;
+								} else if (we.Status != WebExceptionStatus.RequestCanceled) {
+									// propagate the antecedent
+									return task;
+								}
 
-				if (cancellationToken.IsCancellationRequested) {
-					var cancelled = new TaskCompletionSource<HttpResponseMessage> ();
-					cancelled.SetCanceled ();
-					return await cancelled.Task;
+								return CompletedTask.Default;
+							})
+						.Then (
+							task => {
+								if (cancellationToken.IsCancellationRequested) {
+									return CompletedTask.Canceled<HttpResponseMessage> ();
+								} else {
+									return CompletedTask.Default;
+								}
+							});
+				};
+
+			return intermediate
+				.Then (_ => TaskBlocks.Using (resource, body))
+				.Select (_ => CreateResponseMessage (wresponse, request, cancellationToken));
+		}
+
+		private static void AddRequestHeaders(HttpWebRequest request, HttpRequestHeaders headers) {
+			foreach (var header in headers) {
+				switch (header.Key.ToLowerInvariant ()) {
+				case "accept":
+					request.Accept = headers.Accept.ToString ();
+					break;
+
+				case "connection":
+					request.Connection = headers.Connection.ToString ();
+					break;
+
+				case "date":
+					// .NET 3.5 does not expose a property for setting this reserved header
+					goto default;
+
+				case "expect":
+					request.Expect = headers.Expect.ToString ();
+					break;
+
+				case "host":
+					// .NET 3.5 does not expose a property for setting this reserved header
+					goto default;
+
+				case "if-modified-since":
+					request.IfModifiedSince = headers.IfModifiedSince.Value.UtcDateTime;
+					break;
+
+				case "range":
+					foreach (var range in headers.Range.Ranges) {
+						checked {
+							if (!string.IsNullOrEmpty(headers.Range.Unit)) {
+								if (range.To.HasValue)
+									request.AddRange (headers.Range.Unit, (int) range.From.Value, (int) range.To.Value);
+								else
+									request.AddRange (headers.Range.Unit, (int) range.From.Value);
+							} else {
+								if (range.To.HasValue)
+									request.AddRange ((int) range.From.Value, (int) range.To.Value);
+								else
+									request.AddRange ((int) range.From.Value);
+							}
+						}
+					}
+
+					break;
+
+				case "referer":
+					request.Referer = headers.Referrer.OriginalString;
+					break;
+
+				case "transfer-encoding":
+					request.TransferEncoding = headers.TransferEncoding.ToString ();
+					break;
+
+				case "user-agent":
+					request.UserAgent = headers.UserAgent.ToString ();
+					break;
+
+				default:
+					foreach (var value in header.Value) {
+						request.Headers.Add (header.Key, value);
+					}
+
+					break;
 				}
 			}
-			
-			return CreateResponseMessage (wresponse, request, cancellationToken);
+		}
+
+		private static void AddContentHeaders(HttpWebRequest request, HttpContentHeaders headers) {
+			foreach (var header in headers) {
+				switch (header.Key.ToLowerInvariant ()) {
+				case "content-length":
+					request.ContentLength = headers.ContentLength.Value;
+					break;
+
+				case "content-type":
+					request.ContentType = headers.ContentType.ToString ();
+					break;
+
+				default:
+					foreach (var value in header.Value) {
+						request.Headers.Add (header.Key, value);
+					}
+
+					break;
+				}
+			}
 		}
 	}
 }

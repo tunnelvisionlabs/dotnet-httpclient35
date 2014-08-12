@@ -26,8 +26,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Globalization;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace System.Net.Http.Headers
 {

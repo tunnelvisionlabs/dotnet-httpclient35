@@ -29,15 +29,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class RangeItemHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -59,7 +59,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor ()
 		{
 			var v = new RangeItemHeaderValue (1, null);
@@ -69,7 +69,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("-1", v.ToString (), "#2");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var value = new RangeItemHeaderValue (5, null);
@@ -78,7 +78,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreNotEqual (value, new RangeItemHeaderValue (5, 10), "#3");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new RangeItemHeaderValue (3, 23);

@@ -52,7 +52,7 @@ namespace System.Net.Http
 		{
 			base.Add (content);
 			
-			if (string.IsNullOrWhiteSpace (name))
+			if (StringEx.IsNullOrWhiteSpace (name))
 				throw new ArgumentException ("name");
 			
 			AddContentDisposition (content, name, null);
@@ -62,10 +62,10 @@ namespace System.Net.Http
 		{
 			base.Add (content);
 			
-			if (string.IsNullOrWhiteSpace (name))
+			if (StringEx.IsNullOrWhiteSpace (name))
 				throw new ArgumentException ("name");
 			
-			if (string.IsNullOrWhiteSpace (fileName))
+			if (StringEx.IsNullOrWhiteSpace (fileName))
 				throw new ArgumentException ("fileName");
 			
 			AddContentDisposition (content, name, fileName);

@@ -26,8 +26,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace System.Net.Http.Headers
 {
@@ -97,7 +97,7 @@ namespace System.Net.Http.Headers
 			// what .NET does when one of the values is invalid
 			// But it better represents what is actually hold by
 			// the collection
-			return string.Join (", ", list);
+			return StringEx.Join (", ", list);
 		}
 
 		public bool TryParseAdd (string input)

@@ -29,13 +29,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class HttpHeadersTest
 	{
 		HttpHeaders headers;
@@ -44,13 +44,13 @@ namespace MonoTests.System.Net.Http.Headers
 		{
 		}
 
-		[SetUp]
+		[TestInitialize]
 		public void Setup ()
 		{
 			headers = new HttpHeadersMock ();
 		}
 
-		[Test]
+		[TestMethod]
 		public void Add ()
 		{
 			headers.Add ("aa", "value");
@@ -58,7 +58,7 @@ namespace MonoTests.System.Net.Http.Headers
 			headers.Add ("Expires", (string) null);
 		}
 
-		[Test]
+		[TestMethod]
 		public void Add_InvalidArguments ()
 		{
 			try {
@@ -74,14 +74,14 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Clear ()
 		{
 			headers.Add ("aa", "value");
 			headers.Clear ();
 		}
 
-		[Test]
+		[TestMethod]
 		public void GetEnumerator ()
 		{
 			headers.Add ("aa", "value");
@@ -97,7 +97,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (1, i, "#10");
 		}
 
-		[Test]
+		[TestMethod]
 		public void GetValues ()
 		{
 			headers.Add ("aa", "v");
@@ -108,7 +108,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("v", r[1], "#2");
 		}
 
-		[Test]
+		[TestMethod]
 		public void GetValues_Invalid ()
 		{
 			try {
@@ -130,7 +130,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryGetValuesTest ()
 		{
 			IEnumerable<string> headerValues;
@@ -138,7 +138,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsFalse (headers.TryGetValues ("some-name", out headerValues), "#2");
 		}
 
-		[Test]
+		[TestMethod]
 		public void ToStringTest ()
 		{
 			headers.Add ("aa", "v");

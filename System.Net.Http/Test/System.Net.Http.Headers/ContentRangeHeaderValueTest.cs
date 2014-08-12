@@ -29,15 +29,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class ContentRangeHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -65,7 +65,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var value = new ContentRangeHeaderValue (8);
@@ -81,7 +81,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}, "#6");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = ContentRangeHeaderValue.Parse ("bytes  0 - 499/ 1234");
@@ -103,7 +103,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("by */*", res.ToString (), "#24");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -131,7 +131,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new ContentRangeHeaderValue (4);
@@ -152,7 +152,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("mu", value.Unit, "#16");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			ContentRangeHeaderValue res;
@@ -161,7 +161,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (10, res.To, "#3");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			ContentRangeHeaderValue res;

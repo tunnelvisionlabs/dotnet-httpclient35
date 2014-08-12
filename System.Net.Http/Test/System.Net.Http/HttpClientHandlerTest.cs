@@ -29,13 +29,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http;
 using System.Net;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http
 {
-	[TestFixture]
+	extern alias tpl;
+	using AggregateException = tpl::System.AggregateException;
+
+	[TestClass]
 	public class HttpClientHandlerTest
 	{
 		class Proxy : IWebProxy
@@ -60,7 +63,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties_Defaults ()
 		{
 			var h = new HttpClientHandler ();
@@ -82,7 +85,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (ClientCertificateOption.Manual, h.ClientCertificateOptions, "#15");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties_Invalid ()
 		{
 			var h = new HttpClientHandler ();
@@ -106,7 +109,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties_AfterClientCreation ()
 		{
 			var h = new HttpClientHandler ();
@@ -118,7 +121,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Disposed ()
 		{
 			var h = new HttpClientHandler ();

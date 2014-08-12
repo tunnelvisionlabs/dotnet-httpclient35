@@ -29,16 +29,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class NameValueWithParametersHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -54,7 +54,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var value = new NameValueWithParametersHeaderValue ("ab");
@@ -71,7 +71,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (value, second, "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = NameValueWithParametersHeaderValue.Parse ("c");
@@ -87,7 +87,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual (1, res.Parameters.Count, "#6");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -109,7 +109,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new NameValueWithParametersHeaderValue ("s", "p");
@@ -124,7 +124,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("bb", value.Value, "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties_Invalid ()
 		{
 			var value = new NameValueWithParametersHeaderValue ("s");
@@ -135,7 +135,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			NameValueWithParametersHeaderValue res;
@@ -144,7 +144,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsNull (res.Value, "#3");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			NameValueWithParametersHeaderValue res;

@@ -29,15 +29,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class StringWithQualityHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -59,14 +59,14 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor ()
 		{
 			var a = new StringWithQualityHeaderValue ("s", 0.123456);
 			Assert.AreEqual ("s; q=0.123", a.ToString ());
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var value = new StringWithQualityHeaderValue ("ab");
@@ -81,7 +81,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreNotEqual (value, new StringWithQualityHeaderValue ("AA", 1), "#6");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = StringWithQualityHeaderValue.Parse ("c");
@@ -100,7 +100,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("aa; q=0.0", res.ToString (), "#23");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -152,7 +152,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new StringWithQualityHeaderValue ("s", 1);
@@ -164,7 +164,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsNull (value.Quality, "#4");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			StringWithQualityHeaderValue res;
@@ -173,7 +173,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.IsNull (res.Quality, "#3");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			StringWithQualityHeaderValue res;

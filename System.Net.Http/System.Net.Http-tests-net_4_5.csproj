@@ -5,19 +5,22 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{98DA1392-DAD8-4F11-9B88-1E1578FF7670}</ProjectGuid>
+    <ProjectGuid>{155AEF28-C81F-405D-9072-9D52780E3E70}</ProjectGuid>
     <OutputType>Library</OutputType>
     <NoWarn>1699</NoWarn>
-    <OutputPath>bin\Debug\System.Net.Http-tests-net_4_5</OutputPath>
-    <NoStdLib>True</NoStdLib>
     <NoConfig>False</NoConfig>
-    
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>
     </RootNamespace>
     <AssemblyName>System.Net.Http_test_net_4_5</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,6 +30,7 @@
     <DefineConstants>DEBUG;TRACE;NET_1_1;NET_2_0;NET_3_0;NET_3_5;NET_4_0;NET_4_5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <OutputPath>bin\Debug\System.Net.Http-tests-net_4_5</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,14 +39,31 @@
     <DefineConstants>NET_1_1;NET_2_0;NET_3_0;NET_3_5;NET_4_0;NET_4_5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <OutputPath>bin\Release\System.Net.Http-tests-net_4_5</OutputPath>
   </PropertyGroup>
-  <!-- Set AddAdditionalExplicitAssemblyReferences to false, otherwise if targetting .NET4.0, 
-  Microsoft.NETFramework.props will force a dependency on the assembly System.Core. This
-  is a problem to compile the Mono mscorlib.dll -->
-  <PropertyGroup>
-    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
-  </PropertyGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Reference Include="Rackspace.Threading">
+      <HintPath>packages\Rackspace.Threading.1.1.0-beta001\lib\net35-client\Rackspace.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Threading">
+      <HintPath>packages\TaskParallelLibrary.1.0.2856.0\lib\Net35\System.Threading.dll</HintPath>
+      <Aliases>tpl</Aliases>
+    </Reference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
   <ItemGroup>
     <Compile Include="Test\System.Net.Http.Headers\AuthenticationHeaderValueTest.cs" />
     <Compile Include="Test\System.Net.Http.Headers\CacheControlHeaderValueTest.cs" />
@@ -76,7 +97,37 @@
     <Compile Include="Test\System.Net.Http\MultipartContentTest.cs" />
     <Compile Include="Test\System.Net.Http\MultipartFormDataContentTest.cs" />
     <Compile Include="Test\System.Net.Http\StreamContentTest.cs" />
-    <Compile Include="Test\System.Net.Http\StringContentTest.cs" />  </ItemGroup>
+    <Compile Include="Test\System.Net.Http\StringContentTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="System.Net.Http-net_4_5.csproj">
+      <Project>{9862694d-e4fa-418b-8692-a0280feddf36}</Project>
+      <Name>System.Net.Http-net_4_5</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -84,38 +135,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <PropertyGroup>
-    <PreBuildEvent>
-
-    </PreBuildEvent>
-    <PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
-
-    </PostBuildEvent>
-    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
-
-    </PostBuildEvent>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="..\lib\net_4_5\nunit.framework.dll" />
-    <ProjectReference Include="..\corlib\corlib-net_4_5.csproj">
-      <Project>{33BF0182-AC5C-464C-995B-C9CFE74E1A95}</Project>
-      <Name>corlib\corlib-net_4_5</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\System.Net.Http\System.Net.Http-net_4_5.csproj">
-      <Project>{E36C154B-A0AC-4721-B06A-AFE31D357CE5}</Project>
-      <Name>System.Net.Http\System.Net.Http-net_4_5</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\System\System-net_4_5-2.csproj">
-      <Project>{5C605B73-19DA-4FB7-AB39-C7EF9A8B19FE}</Project>
-      <Name>System\System-net_4_5-2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\System.Core\System.Core-net_4_5.csproj">
-      <Project>{D92530F4-3F2B-4351-BD21-9D6BEE6D2A4E}</Project>
-      <Name>System.Core\System.Core-net_4_5</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
 </Project>
-

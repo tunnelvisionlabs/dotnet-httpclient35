@@ -29,15 +29,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Net.Http.Headers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http.Headers
 {
-	[TestFixture]
+	[TestClass]
 	public class WarningHeaderValueTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_InvalidArguments ()
 		{
 			try {
@@ -59,7 +59,7 @@ namespace MonoTests.System.Net.Http.Headers
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Equals ()
 		{
 			var value = new WarningHeaderValue (13, "x", "\"v\"");
@@ -73,7 +73,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreNotEqual (value, new WarningHeaderValue (6, "y", "\"V\""), "#6");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse ()
 		{
 			var res = WarningHeaderValue.Parse ("1 n \"\"");
@@ -91,7 +91,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("155 foo:8080 \"tttext \" \"Sun, 06 Nov 1994 08:49:37 GMT\"", res.ToString (), "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Parse_Invalid ()
 		{
 			try {
@@ -120,7 +120,7 @@ namespace MonoTests.System.Net.Http.Headers
 		}
 
 
-		[Test]
+		[TestMethod]
 		public void Properties ()
 		{
 			var value = new WarningHeaderValue (5, "ag", "\"tt\"");
@@ -136,7 +136,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("\"tt\"", value.Text, "#8");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse ()
 		{
 			WarningHeaderValue res;
@@ -147,7 +147,7 @@ namespace MonoTests.System.Net.Http.Headers
 			Assert.AreEqual ("\"b\"", res.Text, "#5");
 		}
 
-		[Test]
+		[TestMethod]
 		public void TryParse_Invalid ()
 		{
 			WarningHeaderValue res;

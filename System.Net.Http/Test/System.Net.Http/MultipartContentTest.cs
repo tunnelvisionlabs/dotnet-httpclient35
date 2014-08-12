@@ -27,19 +27,18 @@
 //
 
 using System;
-using NUnit.Framework;
 using System.Net.Http;
 using System.IO;
-using System.Threading.Tasks;
 using System.Text;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MonoTests.System.Net.Http
 {
-	[TestFixture]
+	[TestClass]
 	public class MultipartContentTest
 	{
-		[Test]
+		[TestMethod]
 		public void Ctor_Invalid ()
 		{
 			try {
@@ -79,7 +78,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Ctor ()
 		{
 			using (var m = new MultipartContent ("a", "b")) {
@@ -100,7 +99,7 @@ namespace MonoTests.System.Net.Http
 			}
 		}
 
-		[Test]
+		[TestMethod]
 		public void Add ()
 		{
 			var m = new MultipartContent ("a", "b");
@@ -115,7 +114,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (other, m.First (), "#4");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Add_2 ()
 		{
 			var m = new MultipartContent ("a", "X");
@@ -133,7 +132,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (other, m.First (), "#4");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Add_Resursive ()
 		{
 			var m = new MultipartContent ("1", "1a");
@@ -151,7 +150,7 @@ namespace MonoTests.System.Net.Http
 			Assert.AreEqual (other, m.First (), "#4");
 		}
 
-		[Test]
+		[TestMethod]
 		public void Add_Invalid ()
 		{
 			var m = new MultipartContent ("a", "b");

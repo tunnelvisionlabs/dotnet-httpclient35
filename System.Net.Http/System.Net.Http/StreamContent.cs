@@ -29,6 +29,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Rackspace.Threading;
 
 namespace System.Net.Http
 {
@@ -69,7 +70,7 @@ namespace System.Net.Http
 
 		protected override Task<Stream> CreateContentReadStreamAsync ()
 		{
-			return Task.FromResult (content);
+			return CompletedTask.FromResult (content);
 		}
 
 		protected override void Dispose (bool disposing)

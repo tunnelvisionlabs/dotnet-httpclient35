@@ -34,6 +34,7 @@ using System.Globalization;
 using System.Net.Http.Headers;
 using System.Linq;
 using System.Text;
+using Rackspace.Threading;
 
 namespace System.Net.Http
 {
@@ -54,7 +55,7 @@ namespace System.Net.Http
 
 		public MultipartContent (string subtype, string boundary)
 		{
-			if (string.IsNullOrWhiteSpace (subtype))
+			if (StringEx.IsNullOrWhiteSpace (subtype))
 				throw new ArgumentException ("boundary");
 
 			//
@@ -62,7 +63,7 @@ namespace System.Net.Http
 			// of 1 to 70 characters from a set of characters known to be very robust through email gateways,
 			// and NOT ending with white space
 			//
-			if (string.IsNullOrWhiteSpace (boundary))
+			if (StringEx.IsNullOrWhiteSpace (boundary))
 				throw new ArgumentException ("boundary");
 
 			if (boundary.Length > 70)
@@ -122,7 +123,7 @@ namespace System.Net.Http
 			base.Dispose (disposing);
 		}
 
-		protected internal override async Task SerializeToStreamAsync (Stream stream, TransportContext context)
+		protected internal override Task SerializeToStreamAsync (Stream stream, TransportContext context)
 		{
 			// RFC 2046
 			//
@@ -139,41 +140,54 @@ namespace System.Net.Http
 			sb.Append (boundary);
 			sb.Append ('\r').Append ('\n');
 
-			for (int i = 0; i < nested_content.Count; i++) {
-				var c = nested_content [i];
+			int i = 0;
+			Func<bool> condition = () => i < nested_content.Count;
+			Func<Task> body =
+				() => {
+					var c = nested_content [i];
 					
-				foreach (var h in c.Headers) {
-					sb.Append (h.Key);
-					sb.Append (':').Append (' ');
-					foreach (var v in h.Value) {
-						sb.Append (v);
+					foreach (var h in c.Headers) {
+						sb.Append (h.Key);
+						sb.Append (':').Append (' ');
+						foreach (var v in h.Value) {
+							sb.Append (v);
+						}
+						sb.Append ('\r').Append ('\n');
 					}
 					sb.Append ('\r').Append ('\n');
-				}
-				sb.Append ('\r').Append ('\n');
 					
-				buffer = Encoding.ASCII.GetBytes (sb.ToString ());
-				sb.Clear ();
-				await stream.WriteAsync (buffer, 0, buffer.Length).ConfigureAwait (false);
+					buffer = Encoding.ASCII.GetBytes (sb.ToString ());
+					sb.Length = 0;
 
-				await c.SerializeToStreamAsync (stream, context).ConfigureAwait (false);
-					
-				if (i != nested_content.Count - 1) {
+					return stream.WriteAsync (buffer, 0, buffer.Length)
+						.Then (_ => c.SerializeToStreamAsync (stream, context))
+						.Select (
+							_ => {
+								if (i != nested_content.Count - 1) {
+									sb.Append ('\r').Append ('\n');
+									sb.Append ('-').Append ('-');
+									sb.Append (boundary);
+									sb.Append ('\r').Append ('\n');
+								}
+
+								i++;
+							});
+				};
+
+			Func<Task, Task> continuationFunction =
+				task => {
 					sb.Append ('\r').Append ('\n');
 					sb.Append ('-').Append ('-');
 					sb.Append (boundary);
+					sb.Append ('-').Append ('-');
 					sb.Append ('\r').Append ('\n');
-				}
-			}
-			
-			sb.Append ('\r').Append ('\n');
-			sb.Append ('-').Append ('-');
-			sb.Append (boundary);
-			sb.Append ('-').Append ('-');
-			sb.Append ('\r').Append ('\n');
 
-			buffer = Encoding.ASCII.GetBytes (sb.ToString ());
-			await stream.WriteAsync (buffer, 0, buffer.Length).ConfigureAwait (false);
+					buffer = Encoding.ASCII.GetBytes (sb.ToString ());
+					return stream.WriteAsync (buffer, 0, buffer.Length);
+				};
+
+			return TaskBlocks.While (condition, body)
+				.Then (continuationFunction);
 		}
 		
 		protected internal override bool TryComputeLength (out long length)
