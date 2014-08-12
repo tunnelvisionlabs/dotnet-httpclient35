@@ -36,8 +36,15 @@
     <OutputPath>bin\Release\System.Net.Http-tests-net_4_5</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Rackspace.Threading">
+      <HintPath>packages\Rackspace.Threading.1.1.0-beta001\lib\net35-client\Rackspace.Threading.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Threading">
+      <HintPath>packages\TaskParallelLibrary.1.0.2856.0\lib\Net35\System.Threading.dll</HintPath>
+      <Aliases>tpl</Aliases>
+    </Reference>
     <Reference Include="..\lib\net_4_5\nunit.framework.dll" />
   </ItemGroup>
   <ItemGroup>
