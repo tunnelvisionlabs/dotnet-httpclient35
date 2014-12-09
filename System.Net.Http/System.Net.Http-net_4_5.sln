@@ -11,14 +11,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FBC69A
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{6FD18814-E49B-4621-8884-B80215B244DB}"
 	ProjectSection(SolutionItems) = preProject
 		..\build\build.ps1 = ..\build\build.ps1
 		..\build\check-key.ps1 = ..\build\check-key.ps1
-		..\build\KeyReporting.targets = ..\build\KeyReporting.targets
 		..\build\keys.ps1 = ..\build\keys.ps1
 		..\build\push.ps1 = ..\build\push.ps1
 		..\build\version.ps1 = ..\build\version.ps1
