@@ -369,7 +369,8 @@ namespace System.Net.Http
 					break;
 
 				case "connection":
-					request.Connection = headers.Connection.ToString ();
+                    // HttpWebRequest throws an exception if setting the Connection property.
+                    // Use the KeepAlive property instead of this
 					break;
 
 				case "date":
